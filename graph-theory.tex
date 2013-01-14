@@ -1,0 +1,103 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[lmargin=2.5cm,rmargin=2.5cm,tmargin=1.5cm,bmargin=1.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\linespread{1.5}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+
+\begin{document}
+
+\title{Graph Theory With Sets}
+\author{Jackson Gatenby}
+\maketitle
+
+\section{Basic Definitions}
+
+A {\bf graph} $G$ is a 2-tuple $(V(G), E(G))$ where $V(G)$ is a finite non-empty
+set and $E(G)$ is a set of 2-element subsets of $V(G)$. Elements of $V(G)$ are
+{\bf vertices}, and elements of $E(G)$ are {\bf edges}.
+
+Suppose $e = \{u, v\} \in E(G)$. Then, $e$ is {\bf incident} with $u$ and $v$, the
+vertices $u$ and $v$ are {\bf incident} with $e$, and $u$ is {\bf adjacent}
+to $v$. Distinct edges $e_1 \neq e_2$ are {\bf adjacent} if $e_1 \cap e_2 \neq
+\emptyset$, i.e. if they are not disjoint (note that $|e_1 \cap e_2| = 1$ when
+$e_1$ and $e_2$ are adjacent).
+
+A {\bf directed graph} $G$ is a 2-tuple $(V(G), E(G))$ where $V(G)$ is a finite
+non-empty set of elements, called {\bf vertices}, and $E(G)$ is a set of
+2-tuples, called {\bf directed edges}, each formed from elements of $V(G)$.
+
+A {\bf multigraph} $G$ is a 2-tuple $(V(G), E(G))$, where $V(G)$ is a finite
+non-empty set of {\bf vertices}, and $E(G)$ is a multiset of 1-element and
+2-element subsets of $V(G)$, called {\bf edges}.
+
+Here we consider graphs, also called {\bf simple graphs}, as opposed to
+directed graphs and multigraphs.
+
+$|V(G)|$ is the {\bf order} of the graph $G$, and $|E(G)|$ is its {\bf size}.
+The {\bf neighbourhood} of a vertex $v \in V(G)$ is
+$N_G(v) = \{e \in E(G) | v \in e\}$.
+The {\bf degree} of a vertex $v$ is $d(v) = |N_G(v)|$.
+
+A {\bf complete graph} of order $p$, $K_p$, is a graph of order $p$ such that
+\[ E(K_p) = \{\{u, v\} \,|\, u, v \in V(K_p), u \neq v\}. \]
+
+The {\bf complement} of a graph $G$ of order $p$ is
+$G^c = (V(G), E(K_p) \setminus E(G))$. Note that $e \in E(G)$ iff $e \not\in E(G^c)$.
+
+Two graphs $G$ and $H$ are {\bf isomorphic} if there exists a one-to-one
+correspondence $f$ from $V(G)$ to $V(H)$ such that $\{u, v\} \in E(G)$ iff
+$\{f(u), f(v)\} \in E(H)$.
+
+\subsection{Basic Results}
+
+\begin{theorem}
+If $G$ is a graph, then
+\[\sum_{v \in V(G)} d(v) = 2|E(G)|.\]
+\end{theorem}
+
+\begin{proof}
+\begin{align*}
+\sum_{v \in V(G)} d(v)
+& = \sum_{v \in V(G)} |\{e \in E(G) | v \in e \}| \\
+& = \sum_{v \in V(G)} \sum_{v \in e \in E(G)} 1 \\
+& = \sum_{e \in E(G)} \sum_{V(G) \ni v \in e} 1 \\
+& = \sum_{e \in E(G)} 2
+= 2 |E(G)|.
+\end{align*}
+\end{proof}
+
+\begin{lemma}
+If $G$ is a graph, then $(G^c)^c = G$.
+\end{lemma}
+
+\begin{proof}
+Let $p$ be the order of $G$. Then,
+$V((G^c)^c) = V(G^c) = V(G)$, and
+$E((G^c)^c) = E(K_p) \setminus (E(K_p) \setminus E(G)) = E(G)$, so
+$(G^c)^c = G$.
+\end{proof}
+
+\begin{theorem}
+Graphs $G$ and $H$ are isomorphic iff their complements are isomorphic.
+\end{theorem}
+
+\begin{proof}
+Suppose $G$ and $H$ are isomorphic, with an isomorphism $f : V(G) \to V(H)$.
+Then,
+\begin{align*}
+\{u, v\} \in E(G^c)
+& \iff \{u, v\} \not\in E(G) \\
+& \iff \{f(u), f(v)\} \not\in E(H) \\
+& \iff \{f(u), f(v)\} \in E(H^c),
+\end{align*}
+so $f$ is an isomorphism of $G^c$ and $H^c$, so the two are isomorphic.
+
+Conversely, if $G^c$ and $H^c$ are isomorphic, then by above and Lemma 1,
+$(G^c)^c = G$ and $(H^c)^c = H$ are isomorphic.
+\end{proof}
+
+
+\end{document}
