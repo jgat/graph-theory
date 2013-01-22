@@ -22,12 +22,12 @@ set and $E(G)$ is a set of 2-element subsets of $V(G)$. Elements of $V(G)$ are
 Suppose $e = \{u, v\} \in E(G)$. Then, $e$ is {\bf incident} with $u$ and $v$, the
 vertices $u$ and $v$ are {\bf incident} with $e$, and $u$ is {\bf adjacent}
 to $v$. Distinct edges $e_1 \neq e_2$ are {\bf adjacent} if $e_1 \cap e_2 \neq
-\emptyset$, i.e. if they are not disjoint (note that $|e_1 \cap e_2| = 1$ when
-$e_1$ and $e_2$ are adjacent).
+\emptyset$ (note that $|e_1 \cap e_2| = 1$ when $e_1$ and $e_2$ are adjacent).
 
 A {\bf directed graph} $G$ is a 2-tuple $(V(G), E(G))$ where $V(G)$ is a finite
 non-empty set of elements, called {\bf vertices}, and $E(G)$ is a set of
-2-tuples, called {\bf directed edges}, each formed from elements of $V(G)$.
+2-tuples, called {\bf directed edges}, each formed from distinct
+elements of $V(G)$.
 
 A {\bf multigraph} $G$ is a 2-tuple $(V(G), E(G))$, where $V(G)$ is a finite
 non-empty set of {\bf vertices}, and $E(G)$ is a multiset of 1-element and
@@ -38,7 +38,7 @@ directed graphs and multigraphs.
 
 $|V(G)|$ is the {\bf order} of the graph $G$, and $|E(G)|$ is its {\bf size}.
 The {\bf neighbourhood} of a vertex $v \in V(G)$ is
-$N_G(v) = \{e \in E(G) | v \in e\}$.
+$N_G(v) = \{u \in V(G) | {u,v} \in E(G)\}$.
 The {\bf degree} of a vertex $v$ is $d(v) = |N_G(v)|$.
 
 A {\bf complete graph} of order $p$, $K_p$, is a graph of order $p$ such that
@@ -50,6 +50,17 @@ $G^c = (V(G), E(K_p) \setminus E(G))$. Note that $e \in E(G)$ iff $e \not\in E(G
 Two graphs $G$ and $H$ are {\bf isomorphic} if there exists a one-to-one
 correspondence $f$ from $V(G)$ to $V(H)$ such that $\{u, v\} \in E(G)$ iff
 $\{f(u), f(v)\} \in E(H)$.
+
+A graph $G$ is {\bf bipartite} if there exists $A, B \subseteq V(G)$ where
+$A \cup B = V(G)$, $A \cap B = \emptyset$, and
+$\forall e \in E(G), e \cap A \neq \emptyset \neq e \cap B$.
+We call $A, B$ {\bf partite sets} of $G$.
+
+For two disjoint sets $A, B$ of size $m$ and $n$ respectively,
+a {\bf complete bipartite graph}, $K_{m,n}$, is a graph defined as
+\[ K_{m,n} = (V(K_{m,n}), E(K_{m,n})) = (A \cup B, \{\{u, v\} | u \in A, v \in B\}).\]
+It is trivial (though not unnecessary)
+to show that a complete bipartite graph is bipartite.
 
 \subsection{Basic Results}
 
@@ -99,5 +110,92 @@ Conversely, if $G^c$ and $H^c$ are isomorphic, then by above and Lemma 1,
 $(G^c)^c = G$ and $(H^c)^c = H$ are isomorphic.
 \end{proof}
 
+\begin{lemma}
+If $G$ is a bipartite graph on partite sets $A, B$, then for any edge
+$\{u,v\} \in E(G)$ where $u \in A$, it holds that $v \in B$.
+\end{lemma}
+
+\begin{proof}
+Let $e = \{u,v\} \in E(G)$ with $u \in A$. Since $A \cap B = \emptyset$, it
+follows that $u \not\in B$, so then $e \cap B \subseteq \{v\}$.
+Since $e \cap B \neq \emptyset$, it must be that $e \cap B = \{v\}$, so
+$v \in B$.
+\end{proof}
+
+\section{Walks, Paths, Cycles}
+
+A {\bf walk} of length $n$ (where $n \geq 1$)
+on a graph $G$ is a finite sequence of vertices
+$\{v_0, v_1, v_2, \dots, v_n\}$ from $G$ such that
+each pair of consecutive vertices $v_{i-1},v_i$ in the walk are adjacent.
+A walk is closed if $v_0 = v_n$ and open if $v_0 \neq v_n$.
+
+A {\bf path} is an open walk where all vertices are distinct.
+A {\bf cycle} is a closed walk where all vertices are distinct except the first
+and last, where $v_0 = v_n$.
+
+Two vertices $u$ and $v$ are {\bf connected} if $u = v$, or
+there exists a walk from $u$ to $v$.
+
+The {\bf distance} $d(u, v)$ between two connected vertices $u, v$ is the length
+of the shortest path from $u$ to $v$. For instance, the distance between two
+adjacent vertices is 1.
+
+\begin{lemma}
+Two distinct vertices are connected if and only if exists a path between them.
+\end{lemma}
+
+\begin{proof} Exercise. \end{proof} % TODO
+
+\begin{lemma}
+If $G$ is a graph, connectedness forms an equivalence relation on $V(G)$.
+\end{lemma}
+
+\begin{proof} Reflexivity holds by definition.
+Symmetry, Transitivity: Exercise. \end{proof} % TODO
+
+A {\bf component} of a graph $G$ is the induced subgraph of an equivalence class
+with respect to connectedness. A graph is {\bf connected} if it has a single
+component.
+
+\begin{lemma}
+A graph is bipartite if and only if all of its components are bipartite.
+\end{lemma}
+
+\begin{proof} Exercise. \end{proof} % TODO
+
+\begin{theorem}
+A graph $G$ is bipartite if and only if it contains no cycle of odd length.
+\end{theorem}
+
+\begin{proof}
+Let $G$ be a bipartite graph with partitions $A, B$;
+we show that $G$ contains no odd-length cycles.
+If $G$ has no cycles, we are done. If $G$ has a cycle
+$C = \{v_0, v_1, \dots, v_{n-1}, v_n=v_0\}$ of length $n$
+, then WLOG let $v_0 \in A$. Then,
+by Lemma 2, $v_1 \in B$, and generally for $0 \leq i < n$,
+$v_{i} \in A \Rightarrow v_{i+1} \in B$ and
+$v_{i} \in B \Rightarrow v_{i+1} \in A$.
+
+By induction, we conclude that $v_i \in A$ for $i$ even, and $v_i \in B$ for
+$i$ odd. Since $v_n = v_0 \in A$, we conclude that $n$ is not odd.
+
+Let $G$ be a graph with no odd-length cycles; we show that $G$ is bipartite
+by constructing two sets $A, B$ to act as partite sets of $G$.
+By Lemma 5, we need only consider connected graphs.
+WLOG, choose some $v \in V(G)$.\footnote{We can choose such
+$v$ as $V(G)$ is nonempty and finite by definition.} Then, recursively define
+the set $A$ to consist of $v$ and all vertices adjacent to elements of $B$, and
+the set $B$ to consist of all vertices adjacent to elements of $A$. It is easy
+to check this is well-defined.
+
+Since $G$ is connected, $A \cup B = V(G)$. Consider an edge
+$e = \{a, b\} \in E(G)$, it is clear that $a \in A$ or $a \in B$. Then, since
+$b$ is adjacent to $a$, we have $b \in B$ or $b \in A$ respectively.
+In each case, $e \cap A \neq \emptyset \neq e \cap B$.
+
+Exercise (TODO): Show that $A \cap B = \emptyset$.
+\end{proof}
 
 \end{document}
