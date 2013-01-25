@@ -40,6 +40,8 @@ $|V(G)|$ is the {\bf order} of the graph $G$, and $|E(G)|$ is its {\bf size}.
 The {\bf neighbourhood} of a vertex $v \in V(G)$ is
 $N_G(v) = \{u \in V(G) | {u,v} \in E(G)\}$.
 The {\bf degree} of a vertex $v$ is $d(v) = |N_G(v)|$.
+An {\bf isolated} vertex is one where $\forall e \in E(G), v \not\in e$. It is
+simple to check that the degree of an isolated vertex is 0.
 
 A {\bf complete graph} of order $p$, $K_p$, is a graph of order $p$ such that
 \[ E(K_p) = \{\{u, v\} \,|\, u, v \in V(K_p), u \neq v\}. \]
@@ -61,6 +63,12 @@ a {\bf complete bipartite graph}, $K_{m,n}$, is a graph defined as
 \[ K_{m,n} = (V(K_{m,n}), E(K_{m,n})) = (A \cup B, \{\{u, v\} | u \in A, v \in B\}).\]
 It is trivial (though not unnecessary)
 to show that a complete bipartite graph is bipartite.
+
+If $G$ is a graph, then a {\bf subgraph} of $G$ is a graph $H$ (write $H \leq G$)
+where $V(H) \subseteq V(G)$ and $E(H) \subseteq E(G)$.
+For a set $S \subseteq V(G)$, the subgraph {\bf induced} by $S$ is
+$\langle S \rangle = (S, \{e \in E(G) | e \subseteq S\})$. A subgraph is
+{\bf spanning} if $V(H) = V(G)$. A subgraph is {\bf proper} if $E(H) \neq E(G)$.
 
 \subsection{Basic Results}
 
@@ -124,35 +132,59 @@ $v \in B$.
 
 \section{Walks, Paths, Cycles}
 
-A {\bf walk} of length $n$ (where $n \geq 1$)
+A {\bf walk} of {\bf length} $n$ (where $n \geq 1$)
 on a graph $G$ is a finite sequence of vertices
 $\{v_0, v_1, v_2, \dots, v_n\}$ from $G$ such that
-each pair of consecutive vertices $v_{i-1},v_i$ in the walk are adjacent.
-A walk is closed if $v_0 = v_n$ and open if $v_0 \neq v_n$.
+each pair of consecutive vertices $v_{i-1},v_i$ in the walk are adjacent\footnote{
+The common definition of a walk is as a sequence of alternating vertices and
+edges, but the inclusion of edges is unnecessary in simple grapahs.}.
+A walk is {\bf closed} if $v_0 = v_n$ and {\bf open} if $v_0 \neq v_n$.
 
 A {\bf path} is an open walk where all vertices are distinct.
 A {\bf cycle} is a closed walk where all vertices are distinct except the first
 and last, where $v_0 = v_n$.
 
-Two vertices $u$ and $v$ are {\bf connected} if $u = v$, or
+Two vertices $u$ and $v$ are {\bf connected} if $u = v$ or
 there exists a walk from $u$ to $v$.
 
 The {\bf distance} $d(u, v)$ between two connected vertices $u, v$ is the length
-of the shortest path from $u$ to $v$. For instance, the distance between two
-adjacent vertices is 1.
+of the shortest walk (i.e. walk of least length) from $u$ to $v$. The proof of
+Lemma 3 below demonstrates that the shortest walk form $u$ to $v$ is actually a
+path.
 
 \begin{lemma}
 Two distinct vertices are connected if and only if exists a path between them.
 \end{lemma}
 
-\begin{proof} Exercise. \end{proof} % TODO
+\begin{proof}
+If a path exists between two distinct vertices, then that path is a walk,
+and so the vertices are connected.
+
+Suppose two vertices $v_0 \neq v_n$ are connected by an open walk $W = \{v_0, v_1,
+\dots, v_n\}$, choosing a walk such that no other walk has shorter length
+(this is possible by the well-ordering of the natural numbers). We show that
+$W$ is a path. Assume towards contradiction that not all of $v_1, v_2, \dots,
+v_{n-1}$ are distinct, then there are $i,j$ with $0 < i < j < n$
+such that $v_i = v_j$. Then, $v_i$ and $v_{j+1}$ are adjacent, so
+$\{v_0, v_1, \dots, v_i, v_{j+1}, \dots, v_n\}$
+is a walk of length $n - j + i < n$, contradicting that $W$ is the shortest
+walk from $v_0$ to $v_n$.
+\end{proof}
 
 \begin{lemma}
 If $G$ is a graph, connectedness forms an equivalence relation on $V(G)$.
 \end{lemma}
 
-\begin{proof} Reflexivity holds by definition.
-Symmetry, Transitivity: Exercise. \end{proof} % TODO
+\begin{proof}
+Reflexivity holds by definition.
+Suppose vertices $u$ and $v$ are connected by a walk
+$W_1 = \{u, u_1, u_2, \dots, u_{n-1}, v\}$, and $v$ and $w$ are connected by a
+walk $W_2 = \{v, v_1, \dots, v_{m-1}, w\}$. Then, it is simple to verify that
+$W_1' = \{v, u_{n-1}, u_{n-2}, \dots, u_1, u\}$ is a walk from $v$ to $u$,
+so symmetry holds, and that
+$W = \{u, u_1, \dots, u_{n-1}, v, v_1, \dots, v_{m-1}, w\}$ is a walk from
+$u$ to $w$, so transitivity holds.
+\end{proof}
 
 A {\bf component} of a graph $G$ is the induced subgraph of an equivalence class
 with respect to connectedness. A graph is {\bf connected} if it has a single
@@ -162,7 +194,34 @@ component.
 A graph is bipartite if and only if all of its components are bipartite.
 \end{lemma}
 
-\begin{proof} Exercise. \end{proof} % TODO
+\begin{proof}
+Let $G$ be a graph, and let $C_1, C_2, \dots, C_k$ be the components of $G$.
+
+If $G$ is bipartite with partite sets $A$ and $B$, then consider component
+$C_i$, and let $A_i = A \cap V(C_i)$, $B_i = B \cap V(C_i)$. We note that
+$A_i \cup B_i = V(C_i)$, since every vertex of $C_i$ is in either $A$ or $B$;
+we also note $A_i \cap B_i = A \cap B \cap V(C_i) = \emptyset \cap V(C_i) = \emptyset$.
+
+For all $e \in E(C_i)$, we have that $e \in E(G)$, so $e \cap A \neq \emptyset$,
+then let $a \in e \cap A$. Then, $a \in V(C_i) \implies a \in A_i \implies
+a \in e \cap A_i \implies e \cap A_i \neq \emptyset$. Similarly,
+$e \cap B_i \neq \emptyset$, so $C_i$ is bipartite. Since $C_i$ was arbitrary,
+every component of $G$ is bipartite.
+
+If every component $C_i$ is bipartite, with partite sets $A_i$ and $B_i$, then
+let $A = \bigcup_{i=1}^{k} A_i$, $B = \bigcup_{i=1}^{k} B_i$. Since each vertex
+of $G$ is contained in some component, and therefore some $A_i$ or $B_i$, we
+see that $A \cup B = V(G)$. Next, for $i \neq j$, since distinct components
+have disjoint vertex sets, $A_i \cap B_j \subseteq V(C_i) \cap V(C_j) = \emptyset$,
+so $A_i \cap B_j = \emptyset$; and recall that $A_i \cap B_i = \emptyset$.
+By distributivity,
+$A \cap B = \bigcup_{i=1}^{k} \bigcup_{j=1}^{k} A_i \cap B_j = \emptyset$.
+
+For all $e = \{u, v\} \in E(G)$, then $u$ and $v$ are in the same component
+$C_i$, so $e \in E(C_i)$. Then, $e \cap A_i \neq \emptyset \neq e \cap B_i$.
+Since $A_i \subseteq A$, $e \cap A \neq \emptyset$; similarly
+$e \cap B \neq \emptyset$. So, $A$ and $B$ form partite sets of $G$.
+\end{proof}
 
 \begin{theorem}
 A graph $G$ is bipartite if and only if it contains no cycle of odd length.
@@ -172,8 +231,8 @@ A graph $G$ is bipartite if and only if it contains no cycle of odd length.
 Let $G$ be a bipartite graph with partitions $A, B$;
 we show that $G$ contains no odd-length cycles.
 If $G$ has no cycles, we are done. If $G$ has a cycle
-$C = \{v_0, v_1, \dots, v_{n-1}, v_n=v_0\}$ of length $n$
-, then WLOG let $v_0 \in A$. Then,
+$C = \{v_0, v_1, \dots, v_{n-1}, v_n=v_0\}$ of length $n$,
+then WLOG let $v_0 \in A$. Then,
 by Lemma 2, $v_1 \in B$, and generally for $0 \leq i < n$,
 $v_{i} \in A \Rightarrow v_{i+1} \in B$ and
 $v_{i} \in B \Rightarrow v_{i+1} \in A$.
@@ -182,20 +241,33 @@ By induction, we conclude that $v_i \in A$ for $i$ even, and $v_i \in B$ for
 $i$ odd. Since $v_n = v_0 \in A$, we conclude that $n$ is not odd.
 
 Let $G$ be a graph with no odd-length cycles; we show that $G$ is bipartite
-by constructing two sets $A, B$ to act as partite sets of $G$.
+by constructing two sets $A, B$ to act as partite sets of $G$ and $B$.
 By Lemma 5, we need only consider connected graphs.
-WLOG, choose some $v \in V(G)$.\footnote{We can choose such
-$v$ as $V(G)$ is nonempty and finite by definition.} Then, recursively define
+WLOG, choose some $v \in V(G)$. Then, recursively define
 the set $A$ to consist of $v$ and all vertices adjacent to elements of $B$, and
 the set $B$ to consist of all vertices adjacent to elements of $A$. It is easy
-to check this is well-defined.
+to check this is well-defined. Note that, if $u \in A$ and $v \in B$, then there
+is a walk between $u$ and $v$ .
 
 Since $G$ is connected, $A \cup B = V(G)$. Consider an edge
 $e = \{a, b\} \in E(G)$, it is clear that $a \in A$ or $a \in B$. Then, since
 $b$ is adjacent to $a$, we have $b \in B$ or $b \in A$ respectively.
 In each case, $e \cap A \neq \emptyset \neq e \cap B$.
 
-Exercise (TODO): Show that $A \cap B = \emptyset$.
+It remains to show that $A \cap B = \emptyset$.
+Assume (towards contradiction) that $A \cap B$ is non-empty, and let
+$v \in A \cap B$. Then, $v$ is in both $A$ and $B$, so there is a closed walk
+$W = \{v_0, v_1, v_2, \dots, v_n\}$ of odd length
+where there are no shorter walks of odd length. If all of $v_1, v_2,
+\dots, v_{n-1}$ are distinct, then $W$ would be a cycle of odd length, a contradiction.
+Otherwise, find $0 < i < j < n$ where $v_i = v_j$ and
+$v_{i+1}, v_{i+2}, \dots, v_{j-1}$ are all distinct. Note that
+$\{v_i, v_{i+1}, \dots, v_j\}$ forms a cycle in $G$, so $j-i$ is even.
+Then, construct the walk $W' = \{v_0, v_1, \dots, v_i, v_{j+1}, \dots, v_n\}$,
+which is of odd length. But, $W'$ is shorter than $W$, a contradiction.
+So, $A \cap B$ is empty.
+
+
 \end{proof}
 
 \end{document}
